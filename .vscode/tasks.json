@@ -1,0 +1,116 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "DEBUG-build",
+            "command": "gcc",
+            "args": [
+                "-g",
+                "-std=c17",
+                "-m64",
+                "-O0",
+                "-Wall",
+                "${workspaceFolder}/src/*.c",
+                "-o",
+                "${workspaceFolder}/build/debug/game.exe",
+                "-I./src",
+                "-I./src/include",
+                "-I${env:RAYLIB_4}/include",                
+                "-static-libgcc",
+                "-L${env:RAYLIB_4}/lib",
+                "-lraylib",
+                "-lopengl32",
+                "-lgdi32",
+                "-lwinmm"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "type": "shell",
+            "group": "build",
+            "problemMatcher": [],
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "debug-dir-check",
+                "DEBUG-quick-clean"
+            ]
+        },
+        {
+            "label": "RELEASE-build",
+            "command": "gcc",
+            "args": [
+                "-std=c17",
+                "-m64",
+                "-Ofast",
+                "-mwindows",
+                "${workspaceFolder}/src/*.c",
+                "${workspaceFolder}/src/my.o",
+                "-o",
+                "${workspaceFolder}/build/release/game.exe",
+                "-I./src",
+                "-I./src/include",
+                "-I${env:RAYLIB_4}/include",    
+                "-static-libgcc",
+                "-L${env:RAYLIB_4}/lib",
+                "-lraylib",
+                "-lopengl32",
+                "-lgdi32",
+                "-lwinmm"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "type": "shell",
+            "group": "build",
+            "problemMatcher": [],
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "release-dir-check",
+                "RELEASE-quick-clean",              
+                "MY-RC-build"        
+            ]
+        },
+        {
+            "label": "DEBUG-quick-clean",
+            "command": "del ${workspaceFolder}/build/debug/*.exe ; del ${workspaceFolder}/src/*.o",
+            "type": "shell",
+            "group": "build"
+        },
+        {
+            "label": "DEBUG-clean-dist-copy",
+            "command": "robocopy ${workspaceFolder}/dist ${workspaceFolder}/build/debug *.* /MIR /XF .gitignore ; exit 0",
+            "type": "shell",
+            "group": "build"
+        },
+        {
+            "label": "RELEASE-quick-clean",
+            "command": "del ${workspaceFolder}/build/release/*.exe ; del ${workspaceFolder}/src/*.o",
+            "type": "shell",
+            "group": "build"
+        },
+        {
+            "label": "RELEASE-clean-dist-copy",
+            "command": "robocopy ${workspaceFolder}/dist ${workspaceFolder}/build/release *.* /MIR /XF .gitignore ; exit 0",
+            "type": "shell",
+            "group": "build"
+        },
+        {
+            "label": "MY-RC-build",
+            "command": "windres ${workspaceFolder}/src/my.rc ${workspaceFolder}/src/my.o",
+            "type": "shell",
+            "group": "build"
+        },
+        {
+            "label": "debug-dir-check",
+            "command": "cmd",
+            "args": ["/C", "if not exist ${workspaceFolder}\\build\\debug mkdir ${workspaceFolder}\\build\\debug"],
+            "group": "build"
+        },
+        {
+            "label": "release-dir-check",
+            "command": "cmd",
+            "args": ["/C", "if not exist ${workspaceFolder}\\build\\release mkdir ${workspaceFolder}\\build\\release"],
+            "group": "build"
+        },
+    ]
+}
